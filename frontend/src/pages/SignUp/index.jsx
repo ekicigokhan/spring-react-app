@@ -6,23 +6,25 @@ export const SignUp = () => {
   const [username, setUserName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const [PasswordRepeat, setPasswordRepeat] = useState();
+  const [passwordRepeat, setPasswordRepeat] = useState();
   const [apiProgress, setApiProgress] = useState(false);
   const [successMessage, setSuccessMessage] = useState();
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault(); //Browser tarafından gerçekleşecek reload'ı engelledim.
     setApiProgress(true);
     setSuccessMessage();
-    signUp({
-      username: username,
-      email: email,
-      password: password,
-    })
-      .then((response) => {
-        setSuccessMessage(response.data.message);
-      })
-      .finally(() => setApiProgress(false));
+    try {
+      const response = await signUp({
+        username: username,
+        email: email,
+        password: password,
+      });
+      setSuccessMessage(response.data.message);
+    } catch (error) {
+    } finally {
+      setApiProgress(false);
+    }
   };
 
   return (
@@ -64,7 +66,7 @@ export const SignUp = () => {
                 value={password}
                 id="password"
                 className="form-control"
-                type="password"
+                type="text"
                 onChange={(event) => setPassword(event.target.value)}
               />
             </div>
@@ -73,10 +75,10 @@ export const SignUp = () => {
                 Password Repeat
               </label>
               <input
-                value={PasswordRepeat}
+                value={passwordRepeat}
                 id="passwordRepeat"
                 className="form-control"
-                type="password"
+                type="text"
                 onChange={(event) => setPasswordRepeat(event.target.value)}
               />
             </div>
@@ -88,7 +90,7 @@ export const SignUp = () => {
             )}
             <button
               className="btn btn-warning"
-              disabled={!password || password !== PasswordRepeat || apiProgress}
+              disabled={!password || password !== passwordRepeat || apiProgress}
             >
               Sign Up
               {apiProgress && (
