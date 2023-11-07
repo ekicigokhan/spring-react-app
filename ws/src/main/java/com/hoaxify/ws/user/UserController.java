@@ -17,13 +17,18 @@ public class UserController {
 
     @PostMapping("/api/v1/users")
     ResponseEntity<?> createUser(@RequestBody User user) {
-        if(user.getUsername()==null || user.getUsername().isEmpty()){
-            ApiError apiError = new ApiError();
-            apiError.setPath("/api/v1/users");
-            apiError.setMessage("Validation error !");
-            apiError.setStatus(400);
-            Map<String,String> validationErrors = new HashMap<>();
+        ApiError apiError = new ApiError();
+        apiError.setPath("/api/v1/users");
+        apiError.setMessage("Validation error !");
+        apiError.setStatus(400);
+        Map<String, String> validationErrors = new HashMap<>();
+        if (user.getUsername() == null || user.getUsername().isEmpty()) {
             validationErrors.put("username", "Username cannot be null !");
+        }
+        if (user.getEmail() == null || user.getEmail().isEmpty()) {
+            validationErrors.put("email", "E-mail cannot be null !");
+        }
+        if (!validationErrors.isEmpty()) {
             apiError.setValidationErrors(validationErrors);
             return ResponseEntity.badRequest().body(apiError);
         }

@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signUp } from "./api";
+import { Input } from "./components/input";
 
 export const SignUp = () => {
   const [username, setUserName] = useState();
@@ -8,19 +9,50 @@ export const SignUp = () => {
   const [passwordRepeat, setPasswordRepeat] = useState();
   const [apiProgress, setApiProgress] = useState(false);
   const [successMessage, setSuccessMessage] = useState();
+  const [errors, setErrors] = useState({});
+  const [generalError, setGeneralError] = useState();
+
+  useEffect(() => {
+    setErrors((lastErrors) => {
+      return {
+        ...lastErrors, // response.data.validationErrors 'u çoğalttım ve çoğalttığım objeyi güncelleyip return ettim.
+        username: undefined,
+      };
+    });
+  }, [username]); //username her değiştiğinde içerideki function çalışacak.
+
+  useEffect(() => {
+    setErrors((lastErrors) => {
+      return {
+        ...lastErrors,
+        email: undefined,
+      };
+    });
+  }, [email]);
 
   const onSubmit = async (event) => {
     event.preventDefault(); //Browser tarafından gerçekleşecek reload'ı engelledim.
     setApiProgress(true);
     setSuccessMessage();
+    setGeneralError();
+
     try {
       const response = await signUp({
         username: username,
         email: email,
         password: password,
       });
-      setSuccessMessage(response.data.apiError);
-    } catch (error) {
+      setSuccessMessage(response.data.message);
+      console.log(response);
+    } catch (axiosError) {
+      if (
+        axiosError.response?.data &&
+        axiosError.response.data.status === 400
+      ) {
+        setErrors(axiosError.response.data.validationErrors);
+      } else {
+        setGeneralError("Unexpected error occured. Please try again.");
+      }
     } finally {
       setApiProgress(false);
     }
@@ -34,58 +66,38 @@ export const SignUp = () => {
             <h1>Sign Up</h1>
           </div>
           <div className="card-body">
-            <div className="mb-3">
-              <label htmlFor="username" className="form-label">
-                Username
-              </label>
-              <input
-                id="username"
-                className="form-control"
-                type="text"
-                onChange={(event) => setUserName(event.target.value)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">
-                Email
-              </label>
-              <input
-                value={email}
-                id="email"
-                className="form-control"
-                type="text"
-                onChange={(event) => setEmail(event.target.value)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">
-                Password
-              </label>
-              <input
-                value={password}
-                id="password"
-                className="form-control"
-                type="text"
-                onChange={(event) => setPassword(event.target.value)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="passwordRepeat" className="form-label">
-                Password Repeat
-              </label>
-              <input
-                value={passwordRepeat}
-                id="passwordRepeat"
-                className="form-control"
-                type="text"
-                onChange={(event) => setPasswordRepeat(event.target.value)}
-              />
-            </div>
+            <Input
+              id="username"
+              label="Username"
+              error={errors.username}
+              onChange={(event) => setUserName(event.target.value)}
+            />
+            <Input
+              id="email"
+              label="E-mail"
+              error={errors.email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+            <Input
+              id="password"
+              label="Password"
+              error={errors.email}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+            <Input
+              id="username"
+              label="Password Repeat"
+              error={errors.username}
+              onChange={(event) => setPasswordRepeat(event.target.value)}
+            />
           </div>
 
           <div className="text-center card-footer">
             {successMessage && (
               <div className="alert alert-success">{successMessage}</div>
+            )}
+            {generalError && (
+              <div className="alert alert-danger">{generalError}</div>
             )}
             <button
               className="btn btn-warning"
