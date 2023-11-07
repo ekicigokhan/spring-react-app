@@ -81,13 +81,12 @@ export const SignUp = () => {
             <Input
               id="password"
               label="Password"
-              error={errors.email}
+              error={errors.password}
               onChange={(event) => setPassword(event.target.value)}
             />
             <Input
               id="username"
               label="Password Repeat"
-              error={errors.username}
               onChange={(event) => setPasswordRepeat(event.target.value)}
             />
           </div>
