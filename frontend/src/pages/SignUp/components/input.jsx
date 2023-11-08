@@ -7,7 +7,7 @@ export const Input = (props) => {
       <input
         id={props.id}
         className={props.error ? "form-control is-invalid" : "form-control"}
-        type="text"
+        type={props.type}
         onChange={props.onChange}
       />
       <div className="invalid-feedback">{props.error}</div>

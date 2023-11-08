@@ -30,6 +30,15 @@ export const SignUp = () => {
     });
   }, [email]);
 
+  useEffect(() => {
+    setErrors((lastErrors) => {
+      return {
+        ...lastErrors,
+        password: undefined,
+      };
+    });
+  }, [password]);
+
   const onSubmit = async (event) => {
     event.preventDefault(); //Browser tarafından gerçekleşecek reload'ı engelledim.
     setApiProgress(true);
@@ -43,7 +52,6 @@ export const SignUp = () => {
         password: password,
       });
       setSuccessMessage(response.data.message);
-      console.log(response);
     } catch (axiosError) {
       if (
         axiosError.response?.data &&
@@ -81,6 +89,7 @@ export const SignUp = () => {
             <Input
               id="password"
               label="Password"
+              type="password"
               error={errors.password}
               onChange={(event) => setPassword(event.target.value)}
             />
