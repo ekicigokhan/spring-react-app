@@ -1,0 +1,9 @@
+{
+  "signUp": "Kayit Ol",
+  "username": "Kullanici adi",
+  "email": "E-posta",
+  "password": "Şifre",
+  "passwordRepeat": "Şifre Tekrari",
+  "passwordMismatch": "Şifreniz eslesmiyor !",
+  "genericError": "Beklenmeyen bir hata meydana geldi.Lutfen yeniden deneyin."
+}
