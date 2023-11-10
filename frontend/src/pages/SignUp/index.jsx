@@ -41,9 +41,9 @@ export const SignUp = () => {
 
   const onSubmit = async (event) => {
     event.preventDefault(); //Browser tarafından gerçekleşecek reload'ı engelledim.
-    setApiProgress(true);
     setSuccessMessage();
     setGeneralError();
+    setApiProgress(true);
 
     try {
       const response = await signUp({
@@ -52,6 +52,7 @@ export const SignUp = () => {
         password: password,
       });
       setSuccessMessage(response.data.message);
+      console.log(response);
     } catch (axiosError) {
       if (
         axiosError.response?.data &&
@@ -96,6 +97,7 @@ export const SignUp = () => {
             <Input
               id="username"
               label="Password Repeat"
+              type="password"
               onChange={(event) => setPasswordRepeat(event.target.value)}
             />
           </div>
