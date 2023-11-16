@@ -55,13 +55,13 @@ export const SignUp = () => {
         password: password,
       });
       setSuccessMessage(response.data.message);
-      console.log(response);
     } catch (axiosError) {
       if (
         axiosError.response?.data &&
         axiosError.response.data.status === 400
       ) {
         setErrors(axiosError.response.data.validationErrors);
+        console.log(axiosError.response.data);
       } else {
         setGeneralError(t("genericError"));
       }

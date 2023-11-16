@@ -7,10 +7,9 @@ const initialLanguage =
   localStorage.getItem("lang") || navigator.language || "en";
 
 export const i18nInstance = i18n.use(initReactI18next); // react versiyonunu verdik
-
+// initialize sonucunda dille ilgili desteklerin neler oldugunu yazdık.
 i18nInstance.init({
   resources: {
-    // initialize sonucunda dille ilgili desteklerin neler oldugunu yazdık.
     en: {
       translation: en,
     },

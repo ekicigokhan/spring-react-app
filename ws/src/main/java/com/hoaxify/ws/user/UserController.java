@@ -3,6 +3,7 @@ package com.hoaxify.ws.user;
 import com.hoaxify.ws.error.ApiError;
 import com.hoaxify.ws.shared.GenericMessage;
 import com.hoaxify.ws.shared.Messages;
+import com.hoaxify.ws.user.dto.UserCreate;
 import com.hoaxify.ws.user.exception.NotUniqueEmailException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,8 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/api/v1/users")
-    GenericMessage createUser(@Valid @RequestBody User user) {
-        System.out.println(LocaleContextHolder.getLocale());
-        userService.save(user);
+    GenericMessage createUser(@Valid @RequestBody UserCreate user) {
+        userService.save(user.toUser());
         String message = Messages.getMessageForLocale("hoaxify.create.user.success.message", LocaleContextHolder.getLocale());
         return new GenericMessage(message);
     }
@@ -43,6 +43,7 @@ public class UserController {
                 .stream()
                 .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage,
                         (existing, replacing) -> existing));
+        System.out.println(exception.getBindingResult().getFieldErrors());
         apiError.setValidationErrors(validationErrors);
         return ResponseEntity.badRequest().body(apiError);
     }
