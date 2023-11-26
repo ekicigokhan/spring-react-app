@@ -1,5 +1,6 @@
 package com.hoaxify.ws.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,10 +17,13 @@ public class User {
 
     private String email;
 
+    @JsonIgnore
     private String password;
-
+    @JsonIgnore
     private boolean active = false;
-
+    @JsonIgnore
     private String activationToken;
+
+    private String image;
 
 }
