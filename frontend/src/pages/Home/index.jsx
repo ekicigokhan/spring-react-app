@@ -1,3 +1,11 @@
+import { UserList } from "./components/UserList";
+
 export const Home = () => {
-  return <nav>HOME PAGE</nav>;
+  return (
+    <div>
+      <>
+        <UserList />
+      </>
+    </div>
+  );
 };
