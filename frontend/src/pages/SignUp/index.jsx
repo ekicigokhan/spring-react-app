@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { signUp } from "./api";
 import { Input } from "./components/input";
 import { useTranslation } from "react-i18next";
-import { LanguageSelector } from "../../shared/components/LanguageSelector";
+import { Alert } from "@/shared/components/Alert";
+import { Spinner } from "@/shared/components/Spinner";
 
 export const SignUp = () => {
   const [username, setUserName] = useState();
@@ -56,11 +57,13 @@ export const SignUp = () => {
       });
       setSuccessMessage(response.data.message);
     } catch (axiosError) {
-      if (
-        axiosError.response?.data &&
-        axiosError.response.data.status === 400
-      ) {
-        setErrors(axiosError.response.data.validationErrors);
+      if (axiosError.response?.data) {
+        if (axiosError.response.data.status === 400) {
+          setErrors(axiosError.response.data.validationErrors);
+        } else {
+          setGeneralError(axiosError.response.data.message);
+        }
+
         console.log(axiosError.response.data);
       } else {
         setGeneralError(t("genericError"));
@@ -115,26 +118,18 @@ export const SignUp = () => {
 
           <div className="text-center card-footer">
             {successMessage && (
-              <div className="alert alert-success">{successMessage}</div>
+              <Alert styleType="success">{successMessage}</Alert>
             )}
-            {generalError && (
-              <div className="alert alert-danger">{generalError}</div>
-            )}
+            {generalError && <Alert styleType="danger">{generalError}</Alert>}
             <button
-              className="btn btn-warning"
+              className="btn btn-warning "
               disabled={!password || password !== passwordRepeat || apiProgress}
             >
               {t("signUp")}
-              {apiProgress && (
-                <span
-                  className="spinner-border spinner-border-sm"
-                  aria-hidden="true"
-                ></span>
-              )}
+              {apiProgress && <Spinner sm />}
             </button>
           </div>
         </form>
-        <LanguageSelector />
       </div>
     </div>
   );
