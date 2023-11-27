@@ -3,24 +3,29 @@ import { SignUp } from "@/pages/SignUp";
 import { Home } from "@/pages/Home";
 import App from "@/App";
 import { Activation } from "@/pages/Activation";
+import { User } from "@/pages/User";
 
 const routes = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    Component: App,
     children: [
       {
         path: "/",
         index: true,
-        element: <Home />,
+        Component: Home,
       },
       {
         path: "/signup",
-        element: <SignUp />,
+        Component: SignUp,
       },
       {
         path: "/activation/:token",
-        element: <Activation />,
+        Component: Activation,
+      },
+      {
+        path: "/user/:id",
+        Component: User,
       },
     ],
   },

@@ -34,7 +34,7 @@ export function UserList() {
       <div className="card-header text-center fs-4">User List</div>
       <ul className="list-group list-group-flush">
         {userPage.content.map((user) => {
-          return <UserListItem user={user} />;
+          return <UserListItem key={user.id} user={user} />;
         })}
       </ul>
 

@@ -3,6 +3,7 @@ package com.hoaxify.ws.user;
 import com.hoaxify.ws.email.EmailService;
 import com.hoaxify.ws.user.exception.ActivationNotificationException;
 import com.hoaxify.ws.user.exception.InvalidTokenException;
+import com.hoaxify.ws.user.exception.NotFoundException;
 import com.hoaxify.ws.user.exception.NotUniqueEmailException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -38,9 +40,10 @@ public class UserService {
             throw new ActivationNotificationException();
         }
     }
-    public void activateUser(String token){
+
+    public void activateUser(String token) {
         User inDb = userRepository.findByActivationToken(token);
-        if (inDb == null){
+        if (inDb == null) {
             throw new InvalidTokenException();
         }
         inDb.setActive(true);
@@ -51,5 +54,9 @@ public class UserService {
 
     Page<User> getUsers(Pageable page) {
         return userRepository.findAll(page);
+    }
+
+    public User getUser(long id) {
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
 }
