@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { signUp } from "./api";
-import { Input } from "./components/input";
+import { Input } from "@/shared/components/input";
 import { useTranslation } from "react-i18next";
 import { Alert } from "@/shared/components/Alert";
 import { Spinner } from "@/shared/components/Spinner";
+import { Button } from "@/shared/components/Button";
 
 export const SignUp = () => {
   const [username, setUserName] = useState();
@@ -93,6 +94,7 @@ export const SignUp = () => {
               label={t("username")}
               error={errors.username}
               onChange={(event) => setUserName(event.target.value)}
+              as
             />
             <Input
               id="email"
@@ -121,13 +123,12 @@ export const SignUp = () => {
               <Alert styleType="success">{successMessage}</Alert>
             )}
             {generalError && <Alert styleType="danger">{generalError}</Alert>}
-            <button
-              className="btn btn-warning "
-              disabled={!password || password !== passwordRepeat || apiProgress}
+            <Button
+              disabled={!password || passwordRepeat != password}
+              apiProgress={apiProgress}
             >
               {t("signUp")}
-              {apiProgress && <Spinner sm />}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
