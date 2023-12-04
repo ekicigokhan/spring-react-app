@@ -5,6 +5,8 @@ import { Alert } from "@/shared/components/Alert";
 import { Button } from "@/shared/components/Button";
 import { useTranslation } from "react-i18next";
 import { login } from "./api";
+import { useAuthDispatch } from "@/shared/state/context";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const { t } = useTranslation();
@@ -13,6 +15,8 @@ export default function Login() {
   const [apiProgress, setApiProgress] = useState();
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState();
+  const navigate = useNavigate();
+  const dispatch = useAuthDispatch();
 
   useEffect(() => {
     setErrors((lastErrors) => {
@@ -39,6 +43,8 @@ export default function Login() {
 
     try {
       const response = await login({ email, password });
+      dispatch({ type: "login-success", data: response.data.user });
+      navigate("/");
     } catch (axiosError) {
       if (axiosError.response?.data) {
         if (axiosError.response.data.status === 400) {
