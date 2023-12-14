@@ -1,6 +1,8 @@
 package com.hoaxify.ws.user;
 
 import com.hoaxify.ws.email.EmailService;
+import com.hoaxify.ws.user.dto.UserDTO;
+import com.hoaxify.ws.user.dto.UserUpdate;
 import com.hoaxify.ws.user.exception.ActivationNotificationException;
 import com.hoaxify.ws.user.exception.InvalidTokenException;
 import com.hoaxify.ws.user.exception.NotFoundException;
@@ -15,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -52,8 +53,11 @@ public class UserService {
     }
 
 
-    Page<User> getUsers(Pageable page) {
-        return userRepository.findAll(page);
+    Page<User> getUsers(Pageable page, User loggedInUser) {
+        if (loggedInUser == null){
+            return userRepository.findAll(page);
+        }
+        return userRepository.findByIdNot(loggedInUser.getId(), page);
     }
 
     public User getUser(long id) {
@@ -62,5 +66,12 @@ public class UserService {
 
     public User FindByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+
+    public User updateUser(long id, UserUpdate userUpdate) {
+        User inDb = getUser(id);
+        inDb.setUsername(userUpdate.username());
+        return userRepository.save(inDb);
     }
 }

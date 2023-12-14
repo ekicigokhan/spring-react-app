@@ -5,7 +5,7 @@ import { Alert } from "@/shared/components/Alert";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useRouteParamApiRequest } from "@/shared/components/hooks/useRouteParamApiRequest";
-import { ProfileCard } from "./components/ProfieCard";
+import { ProfileCard } from "./components/ProfileCard";
 
 export function User() {
   const {
@@ -13,7 +13,6 @@ export function User() {
     data: user,
     error: error,
   } = useRouteParamApiRequest("id", getUser);
-  console.log(user);
 
   return (
     <>

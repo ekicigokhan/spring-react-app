@@ -9,6 +9,7 @@ export const Input = (props) => {
         className={props.error ? "form-control is-invalid" : "form-control"}
         type={props.type}
         onChange={props.onChange}
+        defaultValue={props.defaultValue}
       />
       <div className="invalid-feedback">{props.error}</div>
     </div>

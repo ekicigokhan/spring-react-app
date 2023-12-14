@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useCallback } from "react";
 import { Spinner } from "@/shared/components/Spinner";
 import { UserListItem } from "./UserListItem";
+import { useAuthState } from "@/shared/state/context";
 
 export function UserList() {
   const [userPage, setUserPage] = useState({
@@ -13,6 +14,7 @@ export function UserList() {
     number: 0,
   });
   const [apiProgress, setApiProgress] = useState(true);
+  const authState = useAuthState();
 
   const getUsers = useCallback(async (page) => {
     setApiProgress(true);
@@ -27,7 +29,7 @@ export function UserList() {
 
   useEffect(() => {
     getUsers();
-  }, []);
+  }, [authState]);
 
   return (
     <div className="card ">
