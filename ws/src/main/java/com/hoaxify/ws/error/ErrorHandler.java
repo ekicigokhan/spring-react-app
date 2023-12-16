@@ -1,7 +1,6 @@
 package com.hoaxify.ws.error;
 
 import com.hoaxify.ws.auth.exception.AuthenticationException;
-import com.hoaxify.ws.auth.exception.AuthorizationException;
 import com.hoaxify.ws.shared.Messages;
 import com.hoaxify.ws.user.exception.ActivationNotificationException;
 import com.hoaxify.ws.user.exception.InvalidTokenException;
@@ -26,7 +25,7 @@ public class ErrorHandler {
             InvalidTokenException.class,
             NotFoundException.class,
             AuthenticationException.class,
-            AuthorizationException.class
+
     })
     ResponseEntity<ApiError> handleException(Exception exception, HttpServletRequest request) {
         ApiError apiError = new ApiError();
@@ -36,7 +35,7 @@ public class ErrorHandler {
             String message = Messages.getMessageForLocale("hoaxify.error.validation", LocaleContextHolder.getLocale());
             apiError.setMessage(message);
             apiError.setStatus(400);
-            var validationErrors = ((MethodArgumentNotValidException)exception).getBindingResult().getFieldErrors()
+            var validationErrors = ((MethodArgumentNotValidException) exception).getBindingResult().getFieldErrors()
                     .stream()
                     .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage,
                             (existing, replacing) -> existing));
@@ -44,7 +43,7 @@ public class ErrorHandler {
 
         } else if (exception instanceof NotUniqueEmailException) {
             apiError.setStatus(400);
-            apiError.setValidationErrors(((NotUniqueEmailException)exception).getValidationErrors());
+            apiError.setValidationErrors(((NotUniqueEmailException) exception).getValidationErrors());
         } else if (exception instanceof ActivationNotificationException) {
             apiError.setStatus(502);
         } else if (exception instanceof InvalidTokenException) {
@@ -53,8 +52,6 @@ public class ErrorHandler {
             apiError.setStatus(404);
         } else if (exception instanceof AuthenticationException) {
             apiError.setStatus(401);
-        } else if (exception instanceof AuthorizationException) {
-            apiError.setStatus(403);
         }
 
         return ResponseEntity.status(apiError.getStatus()).body(apiError);

@@ -15,7 +15,8 @@ public class BasicAuthTokenService implements TokenService {
 
     @Autowired
     UserService userService;
-    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public Token createToken(User user, Credentials creds) {
@@ -32,7 +33,7 @@ public class BasicAuthTokenService implements TokenService {
         var credentials = decoded.split(":");
         var email = credentials[0];
         var password = credentials[1];
-        User userInDb = userService.FindByEmail(email);
+        User userInDb = userService.findByEmail(email);
         if (userInDb == null) return null;
         if (!passwordEncoder.matches(password, userInDb.getPassword())) return null;
         return userInDb;

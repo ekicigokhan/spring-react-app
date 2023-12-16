@@ -9,11 +9,7 @@ public record UserUpdate(
         @Size(min = 4, max = 25)
         String username
 ) {
-    public User toUser() {
-        User user = new User();
-        user.setUsername(username);
-        return user;
-    }
+
 }
 
 
