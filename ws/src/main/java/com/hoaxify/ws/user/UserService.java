@@ -2,6 +2,7 @@ package com.hoaxify.ws.user;
 
 import com.hoaxify.ws.configuration.CurrentUser;
 import com.hoaxify.ws.email.EmailService;
+import com.hoaxify.ws.file.FileService;
 import com.hoaxify.ws.user.dto.UserUpdate;
 import com.hoaxify.ws.user.exception.ActivationNotificationException;
 import com.hoaxify.ws.user.exception.InvalidTokenException;
@@ -27,6 +28,8 @@ public class UserService {
     EmailService emailService;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    FileService fileService;
 
     @Transactional(rollbackOn = MailException.class) // Belli şartlarda db ye kaydet. İşlem yapılmayacak ise geri al.
     public void save(User user) {
@@ -72,6 +75,11 @@ public class UserService {
     public User updateUser(long id, UserUpdate userUpdate) {
         User inDb = getUser(id);
         inDb.setUsername(userUpdate.username());
+        if (userUpdate.image() != null){
+            String fileName = fileService.saveBase64StringAsFile(userUpdate.image());
+            fileService.deleteprofileImage(inDb.getImage());
+            inDb.setImage(fileName);
+        }
         return userRepository.save(inDb);
     }
 }

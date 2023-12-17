@@ -23,7 +23,7 @@ public class User {
     private boolean active = false;
     @JsonIgnore
     private String activationToken;
-
+    @Lob
     private String image;
 
 }

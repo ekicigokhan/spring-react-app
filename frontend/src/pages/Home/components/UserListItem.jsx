@@ -7,7 +7,7 @@ export function UserListItem({ user }) {
       className="list-group-item list-group-item-action nav-link"
       to={`/user/${user.id}`}
     >
-      <ProfileImage width={30} />
+      <ProfileImage width={30} image={user.image} />
       <span className="ms-2">{user.username}</span>
     </Link>
   );
