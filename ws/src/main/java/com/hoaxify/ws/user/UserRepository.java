@@ -9,7 +9,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByEmail(String email);
     User findByActivationToken(String token);
-
     Page<User> findByIdNot(long id, Pageable pageable); // id'si bu olmayanları bul.
+    User findByPasswordResetToken(String passwordResetToken);
 
 }

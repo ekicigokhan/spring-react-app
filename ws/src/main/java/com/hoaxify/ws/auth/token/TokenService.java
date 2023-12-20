@@ -9,4 +9,6 @@ public interface TokenService {
 
     User verifyToken(String authorizationHeader);
 
+    void logout(String authorizationHeader);
+
 }

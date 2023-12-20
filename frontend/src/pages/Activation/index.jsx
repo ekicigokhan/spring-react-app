@@ -3,7 +3,7 @@ import { Alert } from "@/shared/components/Alert";
 import { Spinner } from "@/shared/components/Spinner";
 import { useRouteParamApiRequest } from "@/shared/components/hooks/useRouteParamApiRequest";
 
-export const Activation = () => {
+export function Activation() {
   const {
     apiProgress: apiProgress,
     data: successMessage,
@@ -23,4 +23,4 @@ export const Activation = () => {
       {errorMessage && <Alert styleType="danger">{errorMessage}</Alert>}
     </>
   );
-};
+}

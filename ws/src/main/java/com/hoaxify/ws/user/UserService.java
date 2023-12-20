@@ -3,6 +3,8 @@ package com.hoaxify.ws.user;
 import com.hoaxify.ws.configuration.CurrentUser;
 import com.hoaxify.ws.email.EmailService;
 import com.hoaxify.ws.file.FileService;
+import com.hoaxify.ws.user.dto.PasswordResetRequest;
+import com.hoaxify.ws.user.dto.PasswordUpdate;
 import com.hoaxify.ws.user.dto.UserUpdate;
 import com.hoaxify.ws.user.exception.ActivationNotificationException;
 import com.hoaxify.ws.user.exception.InvalidTokenException;
@@ -37,7 +39,7 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setActivationToken(UUID.randomUUID().toString());
             userRepository.saveAndFlush(user);
-            emailService.sendActivationMail(user.getEmail(), user.getActivationToken());
+            emailService.sendActivationEmail(user.getEmail(), user.getActivationToken());
         } catch (DataIntegrityViolationException ex) {
             throw new NotUniqueEmailException();
         } catch (MailException ex) {
@@ -75,11 +77,45 @@ public class UserService {
     public User updateUser(long id, UserUpdate userUpdate) {
         User inDb = getUser(id);
         inDb.setUsername(userUpdate.username());
-        if (userUpdate.image() != null){
+        if (userUpdate.image() != null) {
             String fileName = fileService.saveBase64StringAsFile(userUpdate.image());
             fileService.deleteprofileImage(inDb.getImage());
             inDb.setImage(fileName);
         }
         return userRepository.save(inDb);
+    }
+
+    public void deleteUser(long id) {
+        User userInDb = getUser(id);
+        if (userInDb.getImage() != null) {
+            fileService.deleteprofileImage(userInDb.getImage());
+        }
+        userRepository.deleteById(id);
+    }
+
+    public void handleResetRequest(PasswordResetRequest passwordResetRequest) {
+        try {
+            User userInDb = userRepository.findByEmail(passwordResetRequest.email());
+            if (userInDb == null) throw new NotFoundException(0);
+            userInDb.setPasswordResetToken(UUID.randomUUID().toString());
+            userRepository.save(userInDb);
+            emailService.sendPasswordResetEmail(userInDb.getEmail(), userInDb.getPasswordResetToken());
+        } catch (DataIntegrityViolationException ex) {
+            throw new NotUniqueEmailException();
+        } catch (MailException ex) {
+            throw new ActivationNotificationException();
+        }
+    }
+
+    public void updatePassword(String token, PasswordUpdate passwordResetRequest) {
+        User userInDb = userRepository.findByPasswordResetToken(token);
+        if (userInDb == null){
+            throw new InvalidTokenException();
+        }
+        userInDb.setPasswordResetToken(null);
+        userInDb.setPassword(passwordEncoder.encode(passwordResetRequest.password()));
+        userInDb.setActive(true);
+        
+        userRepository.save(userInDb);
     }
 }

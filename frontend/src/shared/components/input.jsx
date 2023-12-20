@@ -1,4 +1,4 @@
-export const Input = (props) => {
+export function Input(props) {
   return (
     <div className="mb-3">
       <label htmlFor={props.id} className="form-label">
@@ -14,4 +14,4 @@ export const Input = (props) => {
       <div className="invalid-feedback">{props.error}</div>
     </div>
   );
-};
+}

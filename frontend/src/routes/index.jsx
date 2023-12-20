@@ -4,7 +4,9 @@ import { Home } from "@/pages/Home";
 import App from "@/App";
 import { Activation } from "@/pages/Activation";
 import { User } from "@/pages/User";
-import Login from "@/pages/Login";
+import { Login } from "@/pages/Login";
+import { PasswordResetRequest } from "@/pages/PasswordReset/Request";
+import { SetPassword } from "@/pages/PasswordReset/SetPassword";
 
 const routes = createBrowserRouter([
   {
@@ -31,6 +33,14 @@ const routes = createBrowserRouter([
       {
         path: "/user/:id",
         Component: User,
+      },
+      {
+        path: "/password-reset/request",
+        Component: PasswordResetRequest,
+      },
+      {
+        path: "/password-reset/set",
+        Component: SetPassword,
       },
     ],
   },

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-export const LanguageSelector = () => {
+export function LanguageSelector() {
   const { i18n } = useTranslation();
 
   const onSelectLanguage = (language) => {
@@ -29,4 +29,4 @@ export const LanguageSelector = () => {
       ></img>
     </>
   );
-};
+}

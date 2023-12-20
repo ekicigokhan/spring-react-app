@@ -7,8 +7,9 @@ import { useTranslation } from "react-i18next";
 import { login } from "./api";
 import { useAuthDispatch } from "@/shared/state/context";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-export default function Login() {
+export function Login() {
   const { t } = useTranslation();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -69,14 +70,13 @@ export default function Login() {
           </div>
           <div className="card-body">
             <Input
-              id="username"
+              id="email"
               label={t("email")}
               error={errors.email}
               onChange={(event) => setEmail(event.target.value)}
-              as
             />
             <Input
-              id="email"
+              id="password"
               label={t("password")}
               error={errors.password}
               type="password"
@@ -88,6 +88,9 @@ export default function Login() {
             <Button disabled={!email || !password} apiProgress={apiProgress}>
               {t("login")}
             </Button>
+            <div>
+              <Link to="/password-reset/request">Forgot password ?</Link>
+            </div>
           </div>
         </form>
       </div>

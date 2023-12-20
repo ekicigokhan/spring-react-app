@@ -6,7 +6,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -16,38 +15,41 @@ import java.util.Properties;
 
 @Service
 public class EmailService {
+
     JavaMailSenderImpl mailSender;
 
     @Autowired
     HoaxifyProperties hoaxifyProperties;
 
+    /*@Autowired
+    MessageSource messageSource;*/
+
     @PostConstruct
-    public void initialize() {
+    public void initialize(){
         this.mailSender = new JavaMailSenderImpl();
         mailSender.setHost(hoaxifyProperties.getEmail().host());
         mailSender.setPort(hoaxifyProperties.getEmail().port());
         mailSender.setUsername(hoaxifyProperties.getEmail().username());
-        mailSender.setPassword(hoaxifyProperties.getEmail().password()); //Environment Variables'a ${HOAXIFY_EMAIL_PASSWORD} eklenecek.
+        mailSender.setPassword(hoaxifyProperties.getEmail().password());
 
         Properties properties = mailSender.getJavaMailProperties();
         properties.put("mail.smtp.starttls.enable", "true");
+
     }
 
     String activationEmail = """
             <html>
                 <body>
                     <h1>${title}</h1>
-                    <h3><a href="${url}">${clickHere}</a></h3>
+                    <a href="${url}">${clickHere}</a>
                 </body>
             </html>
             """;
 
-    public void sendActivationMail(String email, String activationToken) {
+    public void sendActivationEmail(String email, String activationToken) {
         var activationUrl = hoaxifyProperties.getClient().host() + "/activation/" + activationToken;
-
         var title = Messages.getMessageForLocale("hoaxify.mail.user.created.title", LocaleContextHolder.getLocale());
         var clickHere = Messages.getMessageForLocale("hoaxify.mail.click.here", LocaleContextHolder.getLocale());
-
 
         var mailBody = activationEmail
                 .replace("${url}", activationUrl)
@@ -61,10 +63,30 @@ public class EmailService {
             message.setTo(email);
             message.setSubject(title);
             message.setText(mailBody, true);
-        } catch (MessagingException ex) {
-            ex.printStackTrace();
+        } catch (MessagingException e) {
+            e.printStackTrace();
         }
 
         this.mailSender.send(mimeMessage);
     }
+
+    public void sendPasswordResetEmail(String email, String passwordResetToken) {
+        String passwordResetUrl = hoaxifyProperties.getClient().host() + "/password-reset/set?tk=" + passwordResetToken;
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
+        var title = "Reset your password";
+        var clickHere = Messages.getMessageForLocale("hoaxify.mail.click.here", LocaleContextHolder.getLocale());
+        var mailBody = activationEmail.replace("${url}", passwordResetUrl).replace("${title}", title).replace("${clickHere}", clickHere);
+        try {
+            message.setFrom(hoaxifyProperties.getEmail().from());
+            message.setTo(email);
+            message.setSubject(title);
+            message.setText(mailBody, true);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        this.mailSender.send(mimeMessage);
+    }
+
+
 }

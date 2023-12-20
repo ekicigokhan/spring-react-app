@@ -1,8 +1,11 @@
 package com.hoaxify.ws.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hoaxify.ws.auth.token.Token;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -25,5 +28,11 @@ public class User {
     private String activationToken;
     @Lob
     private String image;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    //token'da hangi fild'a denk geliyor : Foreing key : user :)
+    //Eğer USER remove edilirse ona bağlı olan TOKEN'larda REMOVE EDİLSİN.
+    private List<Token> tokens;
+
+    private String passwordResetToken;
 
 }

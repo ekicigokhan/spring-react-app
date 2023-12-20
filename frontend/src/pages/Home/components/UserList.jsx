@@ -29,7 +29,7 @@ export function UserList() {
 
   useEffect(() => {
     getUsers();
-  }, [authState]);
+  }, []);
 
   return (
     <div className="card ">

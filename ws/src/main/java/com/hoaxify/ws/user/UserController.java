@@ -3,9 +3,7 @@ package com.hoaxify.ws.user;
 import com.hoaxify.ws.configuration.CurrentUser;
 import com.hoaxify.ws.shared.GenericMessage;
 import com.hoaxify.ws.shared.Messages;
-import com.hoaxify.ws.user.dto.UserCreate;
-import com.hoaxify.ws.user.dto.UserDTO;
-import com.hoaxify.ws.user.dto.UserUpdate;
+import com.hoaxify.ws.user.dto.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -51,6 +49,26 @@ public class UserController {
 
         return new UserDTO(userService.updateUser(id, userUpdate));
     }
+
+    @DeleteMapping("/api/v1/users/{id}")
+    @PreAuthorize("#id == principal.id") //Hata durumda security AccessDenied dönüyor. Handle edebiliriz.
+    GenericMessage deleteUser(@PathVariable long id) {
+        userService.deleteUser(id);
+        return new GenericMessage("User is deleted.");
+    }
+
+    @PostMapping("/api/v1/users/password-reset")
+    GenericMessage passwordResetRequest(@Valid @RequestBody PasswordResetRequest passwordResetRequest){
+        userService.handleResetRequest(passwordResetRequest);
+        return new GenericMessage("Check your email address to reset your password");
+    }
+
+    @PatchMapping("/api/v1/users/{token}/password")
+    GenericMessage setPassword(@PathVariable String token , @Valid @RequestBody PasswordUpdate passwordResetRequest ){
+        userService.updatePassword(token ,passwordResetRequest);
+        return new GenericMessage("Check your email address to reset your password");
+    }
+
 
 
 }

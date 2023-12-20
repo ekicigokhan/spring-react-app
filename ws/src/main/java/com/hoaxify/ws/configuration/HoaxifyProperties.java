@@ -17,6 +17,8 @@ public class HoaxifyProperties {
 
     private Storage storage = new Storage(); // default değerlerle initialize olabilmesi için instance oluştu.
 
+    private String tokenType;
+
     public static record Email(
             String username,
             String password,

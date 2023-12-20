@@ -3,10 +3,9 @@ import { signUp } from "./api";
 import { Input } from "@/shared/components/input";
 import { useTranslation } from "react-i18next";
 import { Alert } from "@/shared/components/Alert";
-import { Spinner } from "@/shared/components/Spinner";
 import { Button } from "@/shared/components/Button";
 
-export const SignUp = () => {
+export function SignUp() {
   const [username, setUserName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -94,7 +93,6 @@ export const SignUp = () => {
               label={t("username")}
               error={errors.username}
               onChange={(event) => setUserName(event.target.value)}
-              as
             />
             <Input
               id="email"
@@ -134,4 +132,4 @@ export const SignUp = () => {
       </div>
     </div>
   );
-};
+}
